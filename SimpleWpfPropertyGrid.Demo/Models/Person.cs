@@ -9,6 +9,7 @@ public class Person
     public string Name { get; set; } = string.Empty;
 
     [PropertyGridLabel("Age (years)")]
+    [PropertyGridNumericUpDown]
     public int Age { get; set; }
 
     [PropertyGridLabel("Date of Birth")]

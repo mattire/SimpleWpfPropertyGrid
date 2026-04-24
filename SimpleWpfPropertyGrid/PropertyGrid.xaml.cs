@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using WpfNumericUpDown;
 
 namespace SimpleWpfPropertyGrid;
 
@@ -214,6 +215,9 @@ public partial class PropertyGrid : UserControl
 
     private static UIElement CreateNumericEditor(PropertyInfo prop, object? value)
     {
+        if (prop.GetCustomAttribute<PropertyGridNumericUpDownAttribute>() != null)
+            return CreateNumericUpDownEditor(prop, value);
+
         var tb = new TextBox
         {
             Text = value?.ToString() ?? "0",
@@ -235,6 +239,35 @@ public partial class PropertyGrid : UserControl
         };
         return tb;
     }
+
+    private static UIElement CreateNumericUpDownEditor(PropertyInfo prop, object? value)
+    {
+        var step = prop.GetCustomAttribute<PropertyGridStepAttribute>()?.Step ?? 1.0;
+        var decimals = prop.GetCustomAttribute<PropertyGridDecimalsAttribute>()?.Decimals
+                       ?? DefaultDecimalPlaces(prop.PropertyType);
+
+        var nud = new NumericUpDown
+        {
+            Value = Convert.ToDouble(value ?? 0),
+            Step = step,
+            DecimalPlaces = decimals,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        nud.ValueChanged += (s, e) =>
+        {
+            var pg = FindPropertyGrid((NumericUpDown)s!);
+            try
+            {
+                var converted = Convert.ChangeType(e.NewValue, prop.PropertyType);
+                prop.SetValue(pg?.TargetObject, converted);
+            }
+            catch { /* ignore out-of-range conversions */ }
+        };
+        return nud;
+    }
+
+    private static int DefaultDecimalPlaces(Type type) =>
+        type == typeof(double) || type == typeof(float) || type == typeof(decimal) ? 2 : 0;
 
     private UIElement CreateObjectButton(PropertyInfo prop, object? value)
     {
