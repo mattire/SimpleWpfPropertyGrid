@@ -54,6 +54,7 @@ jobs:
       # Pack WpfNumericUpDown first — SimpleWpfPropertyGrid declares it as a dependency.
       - name: Pack WpfNumericUpDown
         run: |
+          mkdir -p nupkg
           EXTRA=""
           [[ -n "${{ steps.ver.outputs.version }}" ]] && EXTRA="-p:Version=${{ steps.ver.outputs.version }}"
           dotnet pack WpfNumericUpDown/WpfNumericUpDown.csproj \
@@ -63,7 +64,7 @@ jobs:
             --verbosity detailed \
             $EXTRA
           echo "Pack exit code: $?"
-          ls -la nupkg/ || echo "nupkg directory not found"
+          find nupkg -name "*.nupkg" -o -name "*.snupkg" || echo "No packages found"
 
       - name: Pack SimpleWpfPropertyGrid
         run: |
@@ -76,7 +77,7 @@ jobs:
             --verbosity detailed \
             $EXTRA
           echo "Pack exit code: $?"
-          ls -la nupkg/ || echo "nupkg directory not found"
+          find nupkg -name "*.nupkg" -o -name "*.snupkg" || echo "No packages found"
 
       - name: Show packages to be published
         run: ls -la nupkg/
