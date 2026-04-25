@@ -1,14 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <ProjectReference Include="..\WpfNumericUpDown\WpfNumericUpDown.csproj" />
-  </ItemGroup>
-
   <PropertyGroup>
     <TargetFramework>net9.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- NuGet package metadata -->
+    <PackageId>SimpleWpfPropertyGrid</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>mattire</Authors>
+    <Description>WPF UserControl that renders an editable property grid for any .NET object. Uses reflection to show each public property with an appropriate editor: TextBox for strings, CheckBox for booleans, DatePicker for DateTime, ComboBox for enums, NumericUpDown for numerics, and a recursive "Open" dialog for nested objects. Custom display names and NumericUpDown behaviour are controlled via attributes.</Description>
+    <PackageTags>wpf;propertygrid;controls;reflection;editor;numericupdown</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+    <!-- Source Link: embeds source into the PDB so debuggers can step into library code -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WpfNumericUpDown\WpfNumericUpDown.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+  </ItemGroup>
 
 </Project>

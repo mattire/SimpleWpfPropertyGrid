@@ -1,0 +1,83 @@
+name: Publish NuGet Packages
+
+# Triggers:
+#   - Push a version tag:  git tag v1.2.3 && git push --tags
+#   - Or trigger manually from the Actions tab (uses version from .csproj files)
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+      packages: write   # required to push to GitHub Packages
+
+    steps:
+      - name: Checkout (full history for Source Link)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      # When triggered by a tag like v1.2.3, use 1.2.3 as the package version.
+      # When triggered manually, fall back to whatever Version is in the .csproj files.
+      - name: Resolve package version
+        id: ver
+        run: |
+          ref="${GITHUB_REF_NAME:-}"
+          if [[ "$ref" == v*.*.* ]]; then
+            echo "version=${ref#v}" >> "$GITHUB_OUTPUT"
+            echo "Using tag version: ${ref#v}"
+          else
+            echo "version=" >> "$GITHUB_OUTPUT"
+            echo "Using version from .csproj files"
+          fi
+
+      - name: Restore
+        run: dotnet restore SimpleWpfPropertyGrid.sln
+
+      - name: Build (Release)
+        run: dotnet build SimpleWpfPropertyGrid.sln --configuration Release --no-restore
+
+      # Pack WpfNumericUpDown first — SimpleWpfPropertyGrid declares it as a dependency.
+      - name: Pack WpfNumericUpDown
+        run: |
+          EXTRA=""
+          [[ -n "${{ steps.ver.outputs.version }}" ]] && EXTRA="-p:Version=${{ steps.ver.outputs.version }}"
+          dotnet pack WpfNumericUpDown/WpfNumericUpDown.csproj \
+            --configuration Release \
+            --no-build \
+            --output nupkg \
+            $EXTRA
+
+      - name: Pack SimpleWpfPropertyGrid
+        run: |
+          EXTRA=""
+          [[ -n "${{ steps.ver.outputs.version }}" ]] && EXTRA="-p:Version=${{ steps.ver.outputs.version }}"
+          dotnet pack SimpleWpfPropertyGrid/SimpleWpfPropertyGrid.csproj \
+            --configuration Release \
+            --no-build \
+            --output nupkg \
+            $EXTRA
+
+      - name: Show packages to be published
+        run: ls -la nupkg/
+
+      - name: Push to GitHub Packages
+        run: |
+          dotnet nuget push "nupkg/*.nupkg" \
+            --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+            --api-key "${{ secrets.GITHUB_TOKEN }}" \
+            --skip-duplicate
