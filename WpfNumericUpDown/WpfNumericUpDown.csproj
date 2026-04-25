@@ -8,7 +8,7 @@
 
     <!-- NuGet package metadata -->
     <PackageId>WpfNumericUpDown</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.3</Version>
     <Authors>mattire</Authors>
     <Description>Standalone WPF NumericUpDown UserControl. Exposes Value, Step, DecimalPlaces, Minimum, and Maximum dependency properties and a ValueChanged routed event. Supports keyboard Up/Down arrows, hold-to-repeat spin buttons, and prevents floating-point drift when using fractional step values.</Description>
     <PackageTags>wpf;numericupdown;spinner;controls</PackageTags>
