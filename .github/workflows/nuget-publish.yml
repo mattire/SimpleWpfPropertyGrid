@@ -60,7 +60,10 @@ jobs:
             --configuration Release \
             --no-build \
             --output nupkg \
+            --verbosity detailed \
             $EXTRA
+          echo "Pack exit code: $?"
+          ls -la nupkg/ || echo "nupkg directory not found"
 
       - name: Pack SimpleWpfPropertyGrid
         run: |
@@ -70,7 +73,10 @@ jobs:
             --configuration Release \
             --no-build \
             --output nupkg \
+            --verbosity detailed \
             $EXTRA
+          echo "Pack exit code: $?"
+          ls -la nupkg/ || echo "nupkg directory not found"
 
       - name: Show packages to be published
         run: ls -la nupkg/
