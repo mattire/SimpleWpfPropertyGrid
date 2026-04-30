@@ -66,6 +66,20 @@ jobs:
           echo "Pack exit code: $?"
           find nupkg -name "*.nupkg" -o -name "*.snupkg" || echo "No packages found"
 
+      # Pack WpfCollectionEditor second — SimpleWpfPropertyGrid declares it as a dependency.
+      - name: Pack WpfCollectionEditor
+        run: |
+          EXTRA=""
+          [[ -n "${{ steps.ver.outputs.version }}" ]] && EXTRA="-p:Version=${{ steps.ver.outputs.version }}"
+          dotnet pack WpfCollectionEditor/WpfCollectionEditor.csproj \
+            --configuration Release \
+            --no-build \
+            --output nupkg \
+            --verbosity detailed \
+            $EXTRA
+          echo "Pack exit code: $?"
+          find nupkg -name "*.nupkg" -o -name "*.snupkg" || echo "No packages found"
+
       - name: Pack SimpleWpfPropertyGrid
         run: |
           EXTRA=""

@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-windows7.0;net9.0-windows</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- NuGet package metadata -->
+    <PackageId>WpfCollectionEditor</PackageId>
+    <Version>1.0.3</Version>
+    <Authors>mattire</Authors>
+    <Description>WPF Window that provides a collection editor for List&lt;T&gt; properties. Renders a scrollable ListBox with type-aware Add controls (TextBox for string, NumericUpDown for numerics, DatePicker for DateTime, PropertyGrid for object types) and a Remove Selected button. Object-type items are shown as clickable Open buttons. Integrates with SimpleWpfPropertyGrid via IObjectEditorFactory to avoid a circular dependency.</Description>
+    <PackageTags>wpf;collection;editor;list;controls</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+    <!-- Source Link -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <DebugType>embedded</DebugType>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WpfNumericUpDown\WpfNumericUpDown.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+</Project>
