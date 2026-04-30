@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WpfNumericUpDown\WpfNumericUpDown.csproj" />
+    <ProjectReference Include="..\WpfCollectionEditor\WpfCollectionEditor.csproj" />
   </ItemGroup>
 
   <ItemGroup>
